@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Énergie">
+<title>Énergie Vibratoire</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f0f0f;--bg2:#1a1a1a;--bg3:#242424;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);
+  --text:#f0efe8;--text2:#9a9890;--text3:#5a5856;
+  --teal:#1D9E75;--teal-light:#9FE1CB;
+  --amber:#EF9F27;--amber-light:#FAC775;
+  --gray:#888780;--gray-light:#D3D1C7;
+  --purple:#7F77DD;--purple-light:#CECBF6;
+  --bad-bg:rgba(136,135,128,0.12);
+  --normal-bg:rgba(29,158,117,0.12);
+  --good-bg:rgba(239,159,39,0.12);
+  --radius:14px;--radius-sm:9px;
+  --safe-top:env(safe-area-inset-top,44px);
+  --safe-bottom:env(safe-area-inset-bottom,20px);
+}
+@media(prefers-color-scheme:light){
+  :root{
+    --bg:#f5f4f0;--bg2:#ffffff;--bg3:#eeede9;
+    --border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.14);
+    --text:#1a1a18;--text2:#6b6a66;--text3:#a8a7a3;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+.header{padding:calc(var(--safe-top) + 12px) 20px 0;flex-shrink:0}
+.header-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.header-title{font-family:'DM Serif Display',serif;font-size:26px;line-height:1.1;color:var(--text)}
+.header-date{font-size:12px;color:var(--text3);margin-top:3px;font-weight:300}
+.analytics-link{display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--bg3);border-radius:50%;border:0.5px solid var(--border);cursor:pointer;color:var(--text2)}
+.speed-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 0 14px}
+.speed-tab{padding:10px 6px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg2);text-align:center;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:4px}
+.speed-tab.active-bad{background:var(--bad-bg);border-color:var(--gray)}
+.speed-tab.active-normal{background:var(--normal-bg);border-color:var(--teal)}
+.speed-tab.active-good{background:var(--good-bg);border-color:var(--amber)}
+.speed-dot{width:7px;height:7px;border-radius:50%}
+.dot-bad{background:var(--gray)}.dot-normal{background:var(--teal)}.dot-good{background:var(--amber)}
+.speed-label{font-size:12px;font-weight:500;color:var(--text2)}
+.speed-tab.active-bad .speed-label{color:var(--gray-light)}
+.speed-tab.active-normal .speed-label{color:var(--teal-light)}
+.speed-tab.active-good .speed-label{color:var(--amber-light)}
+.scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px;padding-bottom:calc(var(--safe-bottom) + 20px)}
+.section{display:none}.section.active{display:block}
+.section-label{font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin:18px 0 8px}
+.section-label:first-child{margin-top:0}
+.work-block{background:rgba(127,119,221,0.1);border:0.5px solid var(--purple);border-radius:var(--radius);padding:14px 16px;margin-bottom:8px}
+.work-block-title{font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--purple-light);margin-bottom:12px}
+.work-timer-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.work-timer-info{display:flex;flex-direction:column;gap:2px}
+.work-timer-label{font-size:12px;color:var(--text2)}
+.work-timer-sub{font-size:11px;color:var(--text3)}
+.work-timer-val{font-family:'DM Serif Display',serif;font-size:30px;color:var(--text);letter-spacing:-0.02em}
+.timer-btn{width:100%;padding:11px;background:var(--purple);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s}
+.timer-btn:active{opacity:0.85}
+.timer-btn.paused{background:var(--bg3);color:var(--text2);border:0.5px solid var(--border2)}
+.timer-btn.done-btn{background:var(--teal)}
+.habit{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;background:var(--bg2);border-radius:var(--radius-sm);border:0.5px solid var(--border);margin-bottom:6px;cursor:pointer;transition:all 0.15s;user-select:none;-webkit-user-select:none}
+.habit:active{transform:scale(0.98)}
+.habit.done{opacity:0.45}
+.check{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;margin-top:1px}
+.habit.done .check{background:var(--teal);border-color:var(--teal)}
+.check-svg{display:none}.habit.done .check-svg{display:block}
+.habit-text{flex:1}
+.habit-name{font-size:14px;font-weight:400;color:var(--text);line-height:1.3}
+.habit.done .habit-name{text-decoration:line-through}
+.habit-sub{font-size:12px;color:var(--text3);margin-top:2px;line-height:1.4;font-weight:300}
+.progress-wrap{background:var(--bg2);border-radius:var(--radius);border:0.5px solid var(--border);padding:14px 16px;margin-bottom:14px}
+.progress-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.progress-label{font-size:12px;color:var(--text2)}
+.progress-pct{font-size:14px;font-weight:500;color:var(--text)}
+.progress-track{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;transition:width 0.4s ease;background:var(--teal)}
+.fill-bad{background:var(--gray)}.fill-good{background:var(--amber)}
+.question-box{margin-top:20px;padding:16px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--bg2)}
+.question-label{font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.question-text{font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);line-height:1.45}
+.decision-box{padding:14px 16px;background:var(--bg2);border-radius:var(--radius-sm);border:0.5px solid var(--border);font-size:13px;color:var(--text2);line-height:1.6;margin-top:12px;font-weight:300}
+.decision-box strong{color:var(--text);font-weight:500}
+.save-day-btn{width:100%;padding:15px;background:var(--teal);color:#fff;border:none;border-radius:var(--radius);font-size:15px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:20px;margin-bottom:8px;transition:opacity 0.15s}
+.save-day-btn:active{opacity:0.85}
+.reset-row{display:flex;justify-content:center;margin-top:4px;margin-bottom:24px}
+.reset-btn{font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer;padding:4px 0;font-family:'DM Sans',sans-serif}
+.analytics-page{display:none;flex-direction:column;height:100%}
+.analytics-page.visible{display:flex}
+.back-btn{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--teal);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;padding:0;margin-bottom:16px}
+.metrics-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+.metric-card{background:var(--bg2);border-radius:var(--radius-sm);border:0.5px solid var(--border);padding:12px 14px}
+.metric-lbl{font-size:11px;color:var(--text3);margin-bottom:4px}
+.metric-val{font-size:22px;font-weight:500;color:var(--text)}
+.metric-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.chart-wrap{background:var(--bg2);border-radius:var(--radius);border:0.5px solid var(--border);padding:14px 16px;margin-bottom:10px}
+.chart-ttl{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:10px}
+.mini-chart{display:flex;align-items:flex-end;gap:4px;height:70px}
+.mini-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.mini-bar{width:100%;border-radius:3px 3px 0 0;min-height:3px}
+.mini-bar-label{font-size:9px;color:var(--text3)}
+.speed-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.speed-bar-label{font-size:12px;color:var(--text2);width:60px;flex-shrink:0}
+.speed-bar-track{flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.speed-bar-fill{height:100%;border-radius:3px;transition:width 0.5s ease}
+.speed-bar-count{font-size:12px;color:var(--text3);width:20px;text-align:right}
+.insight-box{padding:12px 14px;border-left:2px solid var(--teal);background:var(--normal-bg);font-size:13px;color:var(--text2);line-height:1.55;font-weight:300;margin-bottom:14px}
+.insight-box strong{color:var(--text);font-weight:500}
+.note-entry{background:var(--bg2);border-radius:var(--radius-sm);border:0.5px solid var(--border);padding:12px 14px;margin-bottom:6px}
+.note-date{font-size:11px;color:var(--text3);margin-bottom:5px}
+.note-body{font-size:13px;color:var(--text2);line-height:1.5;font-weight:300}
+.note-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.note-tag{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--bg3);color:var(--text3)}
+.add-form{background:var(--bg2);border-radius:var(--radius);border:0.5px solid var(--border);padding:16px;margin-bottom:14px}
+.form-row{margin-bottom:12px}
+.form-lbl{font-size:11px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.07em}
+.speed-btns{display:flex;gap:6px}
+.spd-btn{flex:1;padding:8px 4px;border-radius:8px;border:0.5px solid var(--border);background:var(--bg3);font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s}
+.spd-btn.sel-bad{background:var(--bad-bg);border-color:var(--gray);color:var(--gray-light)}
+.spd-btn.sel-normal{background:var(--normal-bg);border-color:var(--teal);color:var(--teal-light)}
+.spd-btn.sel-good{background:var(--good-bg);border-color:var(--amber);color:var(--amber-light)}
+.energy-row{display:flex;align-items:center;gap:10px}
+.energy-row input[type=range]{flex:1;height:4px;-webkit-appearance:none;appearance:none;background:var(--bg3);border-radius:2px;outline:none}
+.energy-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--teal);cursor:pointer}
+.energy-num{font-size:18px;font-weight:500;color:var(--text);min-width:28px;text-align:center}
+textarea{width:100%;background:var(--bg3);border:0.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);resize:none;min-height:80px;outline:none;line-height:1.5}
+textarea::placeholder{color:var(--text3)}
+textarea:focus{border-color:var(--border2)}
+.a-save-btn{width:100%;padding:13px;background:var(--teal);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:4px;transition:opacity 0.15s}
+.a-save-btn:active{opacity:0.85}
+.success-flash{position:fixed;bottom:calc(var(--safe-bottom) + 24px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--teal);color:#fff;font-size:13px;font-weight:500;padding:10px 20px;border-radius:30px;opacity:0;transition:all 0.3s ease;pointer-events:none;white-space:nowrap;z-index:999}
+.success-flash.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.section.active .habit{animation:fadeIn 0.2s ease both}
+.section.active .habit:nth-child(2){animation-delay:0.04s}
+.section.active .habit:nth-child(3){animation-delay:0.08s}
+.section.active .habit:nth-child(4){animation-delay:0.12s}
+.section.active .habit:nth-child(5){animation-delay:0.16s}
+.section.active .habit:nth-child(6){animation-delay:0.20s}
+.section.active .habit:nth-child(7){animation-delay:0.24s}
+</style>
+</head>
+<body>
+
+<div id="main-app" style="display:flex;flex-direction:column;height:100%">
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="header-title">Énergie</div>
+        <div class="header-date" id="header-date"></div>
+      </div>
+      <div class="analytics-link" onclick="showAnalytics()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <rect x="2" y="9" width="3" height="5" rx="1" fill="currentColor" opacity="0.5"/>
+          <rect x="6.5" y="5" width="3" height="9" rx="1" fill="currentColor" opacity="0.7"/>
+          <rect x="11" y="2" width="3" height="12" rx="1" fill="currentColor"/>
+        </svg>
+      </div>
+    </div>
+    <div class="speed-tabs">
+      <div class="speed-tab" id="tab-bad" onclick="switchMode('bad')"><span class="speed-dot dot-bad"></span><span class="speed-label">Mauvais</span></div>
+      <div class="speed-tab active-normal" id="tab-normal" onclick="switchMode('normal')"><span class="speed-dot dot-normal"></span><span class="speed-label">Normal</span></div>
+      <div class="speed-tab" id="tab-good" onclick="switchMode('good')"><span class="speed-dot dot-good"></span><span class="speed-label">Bon</span></div>
+    </div>
+  </div>
+
+  <div class="scroll-area">
+    <div class="progress-wrap">
+      <div class="progress-row">
+        <span class="progress-label" id="prog-label">Progression du jour</span>
+        <span class="progress-pct" id="prog-pct">0%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+
+    <!-- BAD -->
+    <div class="section" id="sec-bad">
+      <div class="section-label">Réveil — 5 min</div>
+      <div class="habit" onclick="toggle(this,'b1')" data-id="b1"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">Se lever à 8h</div><div class="habit-sub">Décision irrévocable — sans négociation</div></div></div>
+      <div class="habit" onclick="toggle(this,'b2')" data-id="b2"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">Verre d'eau — avant le téléphone</div><div class="habit-sub">Sans exception, peu importe l'état</div></div></div>
+      <div class="section-label">Corps — 10 min</div>
+      <div class="habit" onclick="toggle(this,'b3')" data-id="b3"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">Marche de 10 min</div><div class="habit-sub">Dehors — lumière naturelle si possible</div></div></div>
+      <div class="habit" onclick="toggle(this,'b4')" data-id="b4"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">Un repas propre</div><div class="habit-sub">Pas de junk — un seul repas suffisant</div></div></div>
+      <div class="section-label">Mental</div>
+      <div class="habit" onclick="toggle(this,'b5')" data-id="b5"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">Zéro réseaux sociaux avant midi</div><div class="habit-sub">Remplacé par audio positif ou silence</div></div></div>
+      <div class="section-label">Travail — focus advertising</div>
+      <div class="work-block">
+        <div class="work-block-title">Objectif — 1h de focus</div>
+        <div class="work-timer-row">
+          <div class="work-timer-info"><div class="work-timer-label">Temps écoulé</div><div class="work-timer-sub">Cible : 1h00</div></div>
+          <div class="work-timer-val" id="timer-bad">0m00s</div>
+        </div>
+        <button class="timer-btn" id="btn-timer-bad" onclick="toggleTimer('bad')">Démarrer le focus</button>
+      </div>
+      <div class="habit" onclick="toggle(this,'b6')" data-id="b6"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">1h de focus advertising complétée</div><div class="habit-sub">Même un mauvais jour — le minimum compte</div></div></div>
+      <div class="question-box"><div class="question-label">Question du soir</div><div class="question-text">J'ai survécu aujourd'hui. Qu'est-ce qui a rendu la journée difficile — et comment protéger demain ?</div></div>
+      <div class="decision-box"><strong>Règle du mauvais jour :</strong> Tout cocher = victoire. Tu restes dans la boucle gagnante.</div>
+      <button class="save-day-btn" onclick="saveDayFromRoutine()">Enregistrer ma journée</button>
+      <div class="reset-row"><button class="reset-btn" onclick="resetSection('bad')">Réinitialiser</button></div>
+    </div>
+
+    <!-- NORMAL -->
+    <div class="section active" id="sec-normal">
+      <div class="section-label">Réveil — 15 min</div>
+      <div class="habit" onclick="toggle(this,'n1')" data-id="n1"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">Se lever à 8h — téléphone dans l'autre pièce</div><div class="habit-sub">15 min sans écran au réveil</div></div></div>
+      <div class="habit" onclick="toggle(this,'n2')" data-id="n2"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">Eau + 5 min de silence ou respiration</div><div class="habit-sub">Calibrer avant d'absorber le monde</div></div></div>
+      <div class="section-label">Corps — 20 min</div>
+      <div class="habit" onclick="toggle(this,'n3')" data-id="n3"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">20 min de sport ou marche rapide</div><div class="habit-sub">Mouvement qui élève le cœur</div></div></div>
+      <div class="habit" onclick="toggle(this,'n4')" data-id="n4"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">2 repas propres</div><div class="habit-sub">Aliments qui donnent de l'énergie, pas qui en prennent</div></div></div>
+      <div class="section-label">Mental — 10 min</div>
+      <div class="habit" onclick="toggle(this,'n5')" data-id="n5"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">Formation — contenu qui apprend quelque chose</div><div class="habit-sub">Podcast dense, masterclass, lecture — pas de scroll passif</div></div></div>
+      <div class="habit" onclick="toggle(this,'n6')" data-id="n6"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">Question du soir : énergie élevée ou baissée ?</div><div class="habit-sub">Feedback loop — 2 min max</div></div></div>
+      <div class="section-label">Travail — focus advertising</div>
+      <div class="work-block">
+        <div class="work-block-title">Objectif — 3h de focus</div>
+        <div class="work-timer-row">
+          <div class="work-timer-info"><div class="work-timer-label">Temps écoulé</div><div class="work-timer-sub">Cible : 3h00</div></div>
+          <div class="work-timer-val" id="timer-normal">0m00s</div>
+        </div>
+        <button class="timer-btn" id="btn-timer-normal" onclick="toggleTimer('normal')">Démarrer le focus</button>
+      </div>
+      <div class="habit" onclick="toggle(this,'n7')" data-id="n7"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">3h de focus advertising complétées</div><div class="habit-sub">Sessions deep — pas de multitâche</div></div></div>
+      <div class="question-box"><div class="question-label">Question du soir</div><div class="question-text">Qu'est-ce qui a élevé mon énergie aujourd'hui ? Qu'est-ce qui l'a fait baisser ?</div></div>
+      <button class="save-day-btn" onclick="saveDayFromRoutine()">Enregistrer ma journée</button>
+      <div class="reset-row"><button class="reset-btn" onclick="resetSection('normal')">Réinitialiser</button></div>
+    </div>
+
+    <!-- GOOD -->
+    <div class="section" id="sec-good">
+      <div class="section-label">Réveil — 30 min</div>
+      <div class="habit" onclick="toggle(this,'g1')" data-id="g1"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">Réveil 8h — pas de téléphone avant 30 min</div><div class="habit-sub">Ton cerveau n'appartient qu'à toi le matin</div></div></div>
+      <div class="habit" onclick="toggle(this,'g2')" data-id="g2"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">Eau + 10 min de méditation ou intention</div><div class="habit-sub">Définir comment tu veux te sentir aujourd'hui</div></div></div>
+      <div class="section-label">Corps — 40 min</div>
+      <div class="habit" onclick="toggle(this,'g3')" data-id="g3"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">Sport intensif 40 min</div><div class="habit-sub">Musculation, HIIT, natation — quelque chose qui pousse</div></div></div>
+      <div class="habit" onclick="toggle(this,'g4')" data-id="g4"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">Alimentation 100% propre</div><div class="habit-sub">Protéines, légumes, hydratation — aucune exception</div></div></div>
+      <div class="section-label">Mental — Expansion</div>
+      <div class="habit" onclick="toggle(this,'g5')" data-id="g5"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">Formation haut niveau</div><div class="habit-sub">Livre, masterclass, contenu qui change ta vision</div></div></div>
+      <div class="habit" onclick="toggle(this,'g6')" data-id="g6"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">Connexion sociale positive</div><div class="habit-sub">Appel, rencontre, échange réel — l'isolement draine</div></div></div>
+      <div class="habit" onclick="toggle(this,'g7')" data-id="g7"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">Bilan du soir — 3 questions + 1 amélioration</div><div class="habit-sub">Ce qui a marché / cassé / comment faire mieux demain</div></div></div>
+      <div class="section-label">Travail — focus advertising</div>
+      <div class="work-block">
+        <div class="work-block-title">Objectif — 5h de focus</div>
+        <div class="work-timer-row">
+          <div class="work-timer-info"><div class="work-timer-label">Temps écoulé</div><div class="work-timer-sub">Cible : 5h00</div></div>
+          <div class="work-timer-val" id="timer-good">0m00s</div>
+        </div>
+        <button class="timer-btn" id="btn-timer-good" onclick="toggleTimer('good')">Démarrer le focus</button>
+      </div>
+      <div class="habit" onclick="toggle(this,'g8')" data-id="g8"><div class="check"><svg class="check-svg" width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="habit-text"><div class="habit-name">5h de focus advertising complétées</div><div class="habit-sub">Mode expansion — pousser les limites aujourd'hui</div></div></div>
+      <div class="question-box"><div class="question-label">Question du soir</div><div class="question-text">À quel moment je me suis senti au sommet de mon énergie ? Comment reproduire ça demain ?</div></div>
+      <button class="save-day-btn" onclick="saveDayFromRoutine()">Enregistrer ma journée</button>
+      <div class="reset-row"><button class="reset-btn" onclick="resetSection('good')">Réinitialiser</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ANALYTICS -->
+<div id="analytics-page" class="analytics-page">
+  <div style="padding:calc(var(--safe-top) + 12px) 20px 0;flex-shrink:0">
+    <button class="back-btn" onclick="hideAnalytics()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Retour</button>
+    <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:4px">Analytics</div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:16px">Semaine en cours</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px;padding-bottom:calc(var(--safe-bottom)+20px)">
+    <div class="metrics-grid">
+      <div class="metric-card"><div class="metric-lbl">Énergie moy.</div><div class="metric-val" id="a-avg">—</div><div class="metric-sub">sur 10</div></div>
+      <div class="metric-card"><div class="metric-lbl">Jours trackés</div><div class="metric-val" id="a-days">0/7</div></div>
+      <div class="metric-card"><div class="metric-lbl">Jours bons</div><div class="metric-val" id="a-good">0</div></div>
+      <div class="metric-card"><div class="metric-lbl">Streak</div><div class="metric-val" id="a-streak">0j</div></div>
+    </div>
+    <div class="insight-box" id="a-insight">Enregistre au moins 3 jours pour voir ton analyse.</div>
+    <div class="chart-wrap"><div class="chart-ttl">Énergie — 7 jours</div><div class="mini-chart" id="energy-chart"></div></div>
+    <div class="chart-wrap"><div class="chart-ttl">Répartition des vitesses</div><div id="speed-bars"></div></div>
+    <div style="font-size:12px;font-weight:500;color:var(--text2);margin:16px 0 8px">Notes de la semaine</div>
+    <div id="a-notes"></div>
+    <div style="margin-top:20px">
+      <div style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:10px">Enregistrement manuel</div>
+      <div class="add-form">
+        <div class="form-row"><div class="form-lbl">Vitesse</div><div class="speed-btns"><button class="spd-btn" onclick="selSpd('bad',this)">Mauvais</button><button class="spd-btn" onclick="selSpd('normal',this)">Normal</button><button class="spd-btn" onclick="selSpd('good',this)">Bon</button></div></div>
+        <div class="form-row"><div class="form-lbl">Énergie ressentie</div><div class="energy-row"><input type="range" min="1" max="10" value="5" step="1" id="e-slider" oninput="document.getElementById('e-num').textContent=this.value"><span class="energy-num" id="e-num">5</span></div></div>
+        <div class="form-row"><div class="form-lbl">Note du jour</div><textarea id="e-note" placeholder="Ce qui a élevé ou baissé mon énergie…"></textarea></div>
+        <button class="a-save-btn" onclick="saveEntry()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="success-flash" id="flash"></div>
+
+<script>
+const DAYS=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+const SPEED_LABELS={bad:'Mauvais',normal:'Normal',good:'Bon'};
+const SPEED_COLORS={bad:'#888780',normal:'#1D9E75',good:'#EF9F27'};
+const HABIT_IDS={bad:['b1','b2','b3','b4','b5','b6'],normal:['n1','n2','n3','n4','n5','n6','n7'],good:['g1','g2','g3','g4','g5','g6','g7','g8']};
+const FOCUS_GOALS={bad:3600,normal:10800,good:18000};
+
+let mode='normal';
+let selSpeed=null;
+let timers={bad:{running:false,elapsed:0,interval:null},normal:{running:false,elapsed:0,interval:null},good:{running:false,elapsed:0,interval:null}};
+let state=loadState();
+
+function todayKey(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+
+function loadState(){
+  try{
+    const raw=JSON.parse(localStorage.getItem('ev3')||'null');
+    if(!raw) return fresh();
+    if(raw.dayKey!==todayKey()){
+      const lastSave=raw.lastSave?new Date(raw.lastSave):new Date(0);
+      const today=new Date();
+      const resetToday=new Date();resetToday.setHours(3,0,0,0);
+      if(today>=resetToday && lastSave<resetToday){
+        return {...fresh(),week:raw.week||newWeek()};
+      }
+    }
+    return raw;
+  }catch(e){return fresh()}
+}
+
+function fresh(){return{habits:{},week:newWeek(),dayKey:todayKey(),lastSave:null};}
+function newWeek(){return[null,null,null,null,null,null,null];}
+
+function saveState(){state.dayKey=todayKey();try{localStorage.setItem('ev3',JSON.stringify(state))}catch(e){}}
+
+function checkReset(){
+  const now=new Date();
+  const resetTime=new Date();resetTime.setHours(3,0,0,0);
+  const currentKey=todayKey();
+  if(state.dayKey!==currentKey && now>=resetTime){
+    state.habits={};
+    Object.keys(timers).forEach(m=>{
+      timers[m].elapsed=0;timers[m].running=false;
+      if(timers[m].interval){clearInterval(timers[m].interval);timers[m].interval=null;}
+      updateTimerDisplay(m);
+      const btn=document.getElementById('btn-timer-'+m);
+      if(btn){btn.textContent='Démarrer le focus';btn.className='timer-btn';}
+    });
+    state.dayKey=currentKey;
+    saveState();
+    updateProgress();
+  }
+}
+
+function setDate(){
+  document.getElementById('header-date').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+}
+
+function switchMode(m){
+  mode=m;
+  ['bad','normal','good'].forEach(s=>{
+    document.getElementById('tab-'+s).className='speed-tab'+(s===m?' active-'+s:'');
+    document.getElementById('sec-'+s).className='section'+(s===m?' active':'');
+  });
+  updateProgress();
+}
+
+function toggle(el,id){
+  const done=el.classList.toggle('done');
+  if(done){state.habits[id]=true}else{delete state.habits[id]}
+  saveState();updateProgress();
+}
+
+function updateProgress(){
+  const ids=HABIT_IDS[mode];
+  const done=ids.filter(id=>state.habits[id]).length;
+  const total=ids.length;
+  const pct=Math.round(done/total*100);
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-label').textContent=done+' / '+total+' complété';
+  const fill=document.getElementById('prog-fill');
+  fill.style.width=pct+'%';
+  fill.className='progress-fill fill-'+mode;
+  ['bad','normal','good'].forEach(m=>{
+    HABIT_IDS[m].forEach(id=>{
+      const el=document.querySelector('[data-id="'+id+'"]');
+      if(el) el.className='habit'+(state.habits[id]?' done':'');
+    });
+  });
+}
+
+function resetSection(m){
+  HABIT_IDS[m].forEach(id=>delete state.habits[id]);
+  timers[m].elapsed=0;timers[m].running=false;
+  if(timers[m].interval){clearInterval(timers[m].interval);timers[m].interval=null;}
+  updateTimerDisplay(m);
+  const btn=document.getElementById('btn-timer-'+m);
+  if(btn){btn.textContent='Démarrer le focus';btn.className='timer-btn';}
+  saveState();updateProgress();
+}
+
+function toggleTimer(m){
+  const t=timers[m];
+  const btn=document.getElementById('btn-timer-'+m);
+  if(t.running){
+    clearInterval(t.interval);t.interval=null;t.running=false;
+    btn.textContent='Reprendre le focus';btn.className='timer-btn';
+  } else {
+    t.running=true;
+    btn.textContent='Pause';btn.className='timer-btn paused';
+    t.interval=setInterval(()=>{
+      t.elapsed++;
+      updateTimerDisplay(m);
+      if(t.elapsed>=FOCUS_GOALS[m]){
+        clearInterval(t.interval);t.interval=null;t.running=false;
+        btn.textContent='Objectif atteint !';btn.className='timer-btn done-btn';
+        showFlash('Focus complété — objectif atteint !');
+        const doneIds={bad:'b6',normal:'n7',good:'g8'};
+        state.habits[doneIds[m]]=true;
+        saveState();updateProgress();
+      }
+    },1000);
+  }
+}
+
+function updateTimerDisplay(m){
+  const e=timers[m].elapsed;
+  const h=Math.floor(e/3600);
+  const min=Math.floor((e%3600)/60);
+  const sec=e%60;
+  const str=(h>0?h+'h':'')+min+'m'+(sec<10?'0':'')+sec+'s';
+  const el=document.getElementById('timer-'+m);
+  if(el) el.textContent=str;
+}
+
+function saveDayFromRoutine(){
+  const idx=(new Date().getDay()+6)%7;
+  const ids=HABIT_IDS[mode];
+  const done=ids.filter(id=>state.habits[id]).length;
+  const energyScore=Math.max(1,Math.round((done/ids.length)*10));
+  const now=new Date();
+  state.week[idx]={
+    speed:mode,energy:energyScore,
+    note:done+'/'+ids.length+' habitudes complétées. Focus : '+fmtTime(timers[mode].elapsed),
+    date:now.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}),
+    ts:now.toISOString()
+  };
+  state.lastSave=now.toISOString();
+  saveState();
+  showFlash('Journée enregistrée');
+}
+
+function fmtTime(e){
+  const h=Math.floor(e/3600);const min=Math.floor((e%3600)/60);
+  return h>0?h+'h'+min+'m':min+'m';
+}
+
+function showAnalytics(){
+  document.getElementById('main-app').style.display='none';
+  document.getElementById('analytics-page').classList.add('visible');
+  renderAnalytics();
+}
+
+function hideAnalytics(){
+  document.getElementById('main-app').style.display='flex';
+  document.getElementById('analytics-page').classList.remove('visible');
+}
+
+function selSpd(sp,btn){
+  selSpeed=sp;
+  document.querySelectorAll('.spd-btn').forEach(b=>b.className='spd-btn');
+  btn.classList.add('sel-'+sp);
+}
+
+function saveEntry(){
+  if(!selSpeed){alert('Choisis une vitesse');return}
+  const idx=(new Date().getDay()+6)%7;
+  const energy=parseInt(document.getElementById('e-slider').value);
+  const note=document.getElementById('e-note').value.trim();
+  const now=new Date();
+  state.week[idx]={speed:selSpeed,energy,note,date:now.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}),ts:now.toISOString()};
+  state.lastSave=now.toISOString();
+  saveState();
+  document.getElementById('e-note').value='';
+  document.querySelectorAll('.spd-btn').forEach(b=>b.className='spd-btn');
+  selSpeed=null;
+  showFlash('Journée enregistrée');
+  renderAnalytics();
+}
+
+function showFlash(msg){
+  const f=document.getElementById('flash');f.textContent=msg;f.classList.add('show');
+  setTimeout(()=>f.classList.remove('show'),2500);
+}
+
+function renderAnalytics(){
+  const filled=state.week.map((d,i)=>d?{...d,idx:i}:null).filter(Boolean);
+  const energies=filled.map(d=>d.energy);
+  const avg=energies.length?(energies.reduce((a,b)=>a+b,0)/energies.length).toFixed(1):null;
+  document.getElementById('a-avg').textContent=avg||'—';
+  document.getElementById('a-days').textContent=filled.length+'/7';
+  document.getElementById('a-good').textContent=filled.filter(d=>d.speed==='good').length;
+  let streak=0;const ti=(new Date().getDay()+6)%7;
+  for(let i=ti;i>=0;i--){if(state.week[i])streak++;else break}
+  document.getElementById('a-streak').textContent=streak+'j';
+  if(filled.length>=3){
+    const trend=energies[energies.length-1]-energies[0];
+    document.getElementById('a-insight').innerHTML=`Énergie <strong>${trend>=0?'en hausse':'en baisse'}</strong> sur la semaine. Moyenne <strong>${avg}/10</strong>. ${filled.filter(d=>d.speed==='good').length} jour(s) expansion, ${filled.filter(d=>d.speed==='bad').length} jour(s) survie.`;
+  }
+  const chart=document.getElementById('energy-chart');chart.innerHTML='';
+  DAYS.forEach((_,i)=>{
+    const d=state.week[i];
+    const wrap=document.createElement('div');wrap.className='mini-bar-wrap';
+    const h=d?Math.max(4,Math.round((d.energy/10)*60)):4;
+    const col=d?SPEED_COLORS[d.speed]:'rgba(255,255,255,0.07)';
+    wrap.innerHTML=`<div class="mini-bar" style="height:${h}px;background:${col};width:100%"></div><div class="mini-bar-label">${DAYS[i]}</div>`;
+    chart.appendChild(wrap);
+  });
+  const badC=filled.filter(d=>d.speed==='bad').length;
+  const norC=filled.filter(d=>d.speed==='normal').length;
+  const gooC=filled.filter(d=>d.speed==='good').length;
+  const maxC=Math.max(badC,norC,gooC,1);
+  document.getElementById('speed-bars').innerHTML=[{l:'Mauvais',c:badC,col:'#888780'},{l:'Normal',c:norC,col:'#1D9E75'},{l:'Bon',c:gooC,col:'#EF9F27'}]
+    .map(({l,c,col})=>`<div class="speed-bar-row"><span class="speed-bar-label">${l}</span><div class="speed-bar-track"><div class="speed-bar-fill" style="width:${Math.round(c/maxC*100)}%;background:${col}"></div></div><span class="speed-bar-count">${c}</span></div>`).join('');
+  const sorted=[...filled].sort((a,b)=>new Date(b.ts)-new Date(a.ts));
+  document.getElementById('a-notes').innerHTML=sorted.length?sorted.map(d=>`<div class="note-entry"><div class="note-date">${d.date}</div><div class="note-body">${d.note||'<em style="opacity:0.5">Pas de note.</em>'}</div><div class="note-tags"><span class="note-tag">${SPEED_LABELS[d.speed]}</span><span class="note-tag">Énergie ${d.energy}/10</span></div></div>`).join(''):'<div class="note-entry"><div class="note-body" style="opacity:0.5">Aucune entrée cette semaine.</div></div>';
+}
+
+setDate();
+checkReset();
+updateProgress();
+setInterval(checkReset,60000);
+</script>
+</body>
+</html>
